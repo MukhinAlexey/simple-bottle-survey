@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Submissions</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="js/survey.jquery.min.js"></script>
+    <link href="css/survey.css" type="text/css" rel="stylesheet"/>
+  </head>
+  <body>
+    <ul>
+      % for submission in submissions:
+        <li><a href="#" class="submission">{{ submission.id() }}</a></li>
+      % end
+    </ul>
+    <hr>    
+    <button id="rusButton">РУССКИЙ</button>
+    <button id="engButton">ENGLISH</button>
+    <div id="surveyContainer"></div>
+    <script>
+        var surveyJSON;
+        var survey;
+        var dataJSON;
+        var answersID;
+        
+        $("#rusButton").click(function () {
+            localStorage.setItem('language', 'rus');
+            if (answersID != null){
+                surveyRefresh(answersID);
+            }
+        });
+        $("#engButton").click(function () {
+            localStorage.setItem('language', 'eng');
+            if (answersID != null){
+                surveyRefresh(answersID);
+            }
+        });
+        $(".submission").click(function(){
+            surveyRefresh($(this).text());
+        });
+
+        function surveyRefresh(id){
+        answersID = id;
+        var language = localStorage.getItem('language');
+        var urlForQuestionsWithLanguage = "/questions_in_english";
+        if (language == "rus") {
+            urlForQuestionsWithLanguage = "/questions_in_russian";
+        }
+
+        $.getJSON(urlForQuestionsWithLanguage, function (data) {
+            surveyJSON = data;
+        })
+        .done(function(){
+        $.getJSON("/" + id, function (data){
+            dataJSON = data;
+            }).done(function () {
+                    survey = new Survey.Model(surveyJSON);
+                    survey.mode = "display";
+                    survey.data = dataJSON;
+                    survey.showNavigationButtons = false;
+                    $("#surveyContainer").Survey({
+                        model: survey
+                    });
+                });
+        });
+        
+        }
+
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div>
+    Questions in Russian
+    <input type="text" id="questionsInRussian">
+    <input type="submit" id="submitQuestionsInRussian">
+</div>
+<div>
+    Questions in English
+    <input type="text" id="questionsInEnglish">
+    <input type="submit" id="submitQuestionsInEnglish">
+</div>
+<div>
+    Admin credentials
+    <input type="text" id="login">
+    <input type="text" id="pass">
+    <input type="submit" id="submitCredentials">
+</div>
+<script>
+    $("#submitQuestionsInRussian").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/questions_in_russian",
+            data: $("#questionsInRussian").val(),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
+        alert("Done");
+    });
+    $("#submitQuestionsInEnglish").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/questions_in_english",
+            data: $("#questionsInEnglish").val(),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        }); 
+        alert("Done");
+    });
+    $("#submitCredentials").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/admin",
+            data: JSON.stringify({username: $("#login").val(), password: $("#pass").val()}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
+        alert("Done");
+    });
+</script>
+</body>
+</html>
